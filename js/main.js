@@ -4,7 +4,7 @@ const vSW = {
     name: 'vanillaSmellWords',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
-    extraCharsCodes:[305,231,351,246,252,287,304],
+    extraCharsCodes:[305,231,351,246,252,287],
     init: () => {
         vSW.gameBoard.create()
             .then(() => {
@@ -75,17 +75,20 @@ const vSW = {
                 for(let y=0; y<vSW.gameBoard.guessedWords[x].length;y++){
                     let targetLetterFromGuessedWord = vSW.gameBoard.guessedWords[x][y];
                     let inputIndex = (x*vSW.gameBoard.colCount)+y;
-                    theInputs[inputIndex].value=targetLetterFromGuessedWord;
+                    theInputs[inputIndex].value=targetLetterFromGuessedWord.toLocaleUpperCase('tr');
                 }
             }
         },
         checkEnteredWord:()=>{
             let theInputs = document.querySelectorAll(`#${vSW.name} input`);
+            if(vSW.gameBoard.guessedWords.length===0) return;
             let guessedWordsLength = vSW.gameBoard.guessedWords.length;
             let lastEnteredWord = vSW.gameBoard.guessedWords[guessedWordsLength-1];
             let askedWord = vSW.dictionary()[vSW.askedWordIndex];
             let askedWordLettersArray = askedWord.split('');
             console.log(askedWord);
+            console.log(JSON.stringify(vSW.gameBoard.guessedWords))
+
             if(lastEnteredWord.length!==vSW.gameBoard.colCount){
                 vSW.warningMessages(`You need to enter ${vSW.gameBoard.colCount} chars to make a guess!`);
                 return;
@@ -133,7 +136,7 @@ const vSW = {
                     if(charCodes>122 && !vSW.extraCharsCodes.includes(charCodes) || [91,92,93,94,95,96].includes(charCodes)) continue;
                     const char = String.fromCharCode(charCodes);
                     const button = document.createElement('button');
-                    button.innerHTML = char;
+                    button.innerHTML = char.toLocaleUpperCase('tr');
                     button.style.cssText = vSW.cssStoryBook["keyboard-button"];
                     button.addEventListener('click', () => {
                         vSW.gameBoard.addChar(char);
@@ -142,11 +145,11 @@ const vSW = {
                 }
                 // DELETE BUTTON
                 let deleteButton = document.createElement('button');
-                deleteButton.style.cssText = vSW.cssStoryBook["keyboard-button"];
+                deleteButton.style.cssText = vSW.cssStoryBook["keyboard-button-delete"];
                 deleteButton.innerHTML = "←";
                 deleteButton.addEventListener('click',()=>{
                     let lastGuessedWord = vSW.gameBoard.guessedWords[vSW.gameBoard.guessedWords.length-1];
-                    if(lastGuessedWord.length>0){
+                    if(lastGuessedWord.length){
                         // if(lastGuessedWord.length<vSW.gameBoard.colCount){
                             vSW.gameBoard.guessedWords[vSW.gameBoard.guessedWords.length-1].length=lastGuessedWord.length-1;
                             vSW.gameBoard.placeWordsToBoard();
@@ -157,7 +160,7 @@ const vSW = {
                 document.getElementById(vSW.name + '-keyboard').appendChild(deleteButton);
                 // ENTER-RETURN BUTTON ⏎
                 let enterButton = document.createElement('button');
-                enterButton.style.cssText = vSW.cssStoryBook["keyboard-button"];
+                enterButton.style.cssText = vSW.cssStoryBook["keyboard-button-enter"];
                 enterButton.innerHTML = "⏎";
                 enterButton.addEventListener('click',vSW.gameBoard.checkEnteredWord);
                 document.getElementById(vSW.name + '-keyboard').appendChild(enterButton);
@@ -168,7 +171,9 @@ const vSW = {
             "game-board": "width: 80%; height: 400px; background-color: #f5f5f5; margin:10px auto;",
             "char": "width: 100px; height: 100px; background-color: #f5f5f5; border: 1px solid #000;",
             "keyboard": "width: 80%; height: 10%; background-color: #f5f5f5;margin:250px auto; 10px",
-            "keyboard-button": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px;",
+            "keyboard-button": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; font-weight:bold;",
+            "keyboard-button-enter": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; background-color:darkgreen; color:white;",
+            "keyboard-button-delete": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; background-color:red; color:white;",
             "game-board-row": "width: 100%; height: 25%; display: flex; flex-direction: row;",
             "game-board-col": "width: 25%; height: 100%; background-color: #f5f5f5; border: 1px solid #000;",
             "letterInput": "width:100%; height:100%; color:red; font-size:20px",
