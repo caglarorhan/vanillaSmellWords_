@@ -3,6 +3,7 @@ import dictionary from './dictionary.js';
 const vSW = {
     name: 'vanillaSmellWords',
     version:'2022.0.6',
+    author:'https://github.com/caglarorhan',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
     extraCharsCodes:[305,231,351,246,252,287],
@@ -15,6 +16,7 @@ const vSW = {
                 vSW.gameBoard.setBoard();
                 vSW.askedWordIndex = vSW.getRandomWordIndexFromDictionary();
             })
+
     },
     getRandomWordIndexFromDictionary: ()=>{
         return Math.floor(Math.random()*(dictionary.length-1));
@@ -124,6 +126,7 @@ const vSW = {
                     if(lastEnteredWord[x]===askedWordLettersArray[x]){
                         // letter and its position are correct.
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterCorrectPlace;
+                        letterCountMap[lastEnteredWord[x]]--;
                     }else if(askedWordLettersArray.includes(lastEnteredWord[x])){
                         // letter is correct but its position is wrong
                         if(letterCountMap[lastEnteredWord[x]]>0){
@@ -211,5 +214,11 @@ const vSW = {
 window.addEventListener('load',vSW.init);
 window.addEventListener('load',()=>{
     document.body.style.cssText=vSW.cssStoryBook.body;
+    let versionTag = document.createElement('div');
+    versionTag.innerHTML=`version: ${vSW.version}`;
+    document.body.insertAdjacentElement('afterbegin',versionTag);
+    let authorTag = document.createElement('div');
+    authorTag.innerHTML=`author: <a href="${vSW.author}" target="_blank" rel="noopener noreferrer">Caglar Orhan</a>`;
+    document.body.insertAdjacentElement('beforeend',authorTag);
 });
 
