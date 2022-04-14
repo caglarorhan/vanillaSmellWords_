@@ -101,7 +101,7 @@ const vSW = {
                         // letter and its position are correct.
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterCorrectPlace;
                     }else if(askedWordLettersArray.includes(lastEnteredWord[x])){
-                        // letter is correct position is wrong
+                        // letter is correct but its position is wrong
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterWrongPlace;
                     }else{
                         // letter is wrong
@@ -112,13 +112,17 @@ const vSW = {
                 if(lastEnteredWord.join('')===askedWord){
                     vSW.warningMessages(`Bravvo... You found the asked word!`);
                 }else{
-                    vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
+                    if(vSW.dictionary().includes(lastEnteredWord.join(''))){
+                        vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
+                        // Close newly entered word spot and begin to new word
+                        let newWord = [];
+                        vSW.gameBoard.guessedWords.push(newWord);
+                    }else{
+                        vSW.warningMessages(`This word is not on the dictionary!`);
+                    }
+
                 }
             }
-
-            // Close newly entered word spot and begin to new word
-                let newWord = [];
-                vSW.gameBoard.guessedWords.push(newWord);
         }
     },
         keyBoard: {
@@ -168,15 +172,15 @@ const vSW = {
         },
         cssStoryBook: {
             "body":"text-align:center;",
-            "game-board": "width: 80%; height: 400px; background-color: #f5f5f5; margin:10px auto;",
+            "game-board": "width: 40%; height: 400px; background-color: #f5f5f5; margin:10px auto;",
             "char": "width: 100px; height: 100px; background-color: #f5f5f5; border: 1px solid #000;",
-            "keyboard": "width: 80%; height: 10%; background-color: #f5f5f5;margin:250px auto; 10px",
+            "keyboard": "width: 40%; height: 10%; background-color: #f5f5f5;margin: 100px auto; 10px",
             "keyboard-button": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; font-weight:bold;",
             "keyboard-button-enter": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; background-color:darkgreen; color:white;",
             "keyboard-button-delete": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; background-color:red; color:white;",
-            "game-board-row": "width: 100%; height: 25%; display: flex; flex-direction: row;",
-            "game-board-col": "width: 25%; height: 100%; background-color: #f5f5f5; border: 1px solid #000;",
-            "letterInput": "width:100%; height:100%; color:red; font-size:20px",
+            "game-board-row": "width: 100%; height: 20%; display: flex; flex-direction: row;",
+            "game-board-col": "width: 20%; height: 100%; background-color: #f5f5f5; border: 1px solid #000;",
+            "letterInput": "width:100%; height:100%; color:red; font-size:3vw; text-align:center; font-weight:bold;",
             "correctLetterCorrectPlace":"color:white; background-color:green",
             "correctLetterWrongPlace":"color:white; background-color:orange",
             "wrongLetter":"color:white; background-color:grey",
