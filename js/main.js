@@ -100,6 +100,23 @@ const vSW = {
                     letterCountMap[letter]=++letterCountMap[letter] || 1;
                 })
                 console.log(JSON.stringify(letterCountMap))
+
+                //if word guessed correctly
+                if(lastEnteredWord.join('')===askedWord){
+                    vSW.warningMessages(`Bravvo... You found the asked word!`);
+                }else{
+                    if(vSW.dictionary().includes(lastEnteredWord.join(''))){
+                        vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
+                        // Close newly entered word spot and begin to new word
+                        let newWord = [];
+                        vSW.gameBoard.guessedWords.push(newWord);
+                    }else{
+                        vSW.warningMessages(`This word is not on the dictionary!`);
+                        return;
+                    }
+
+                }
+
                 //coloring hints created
                 for(let x=0; x<vSW.gameBoard.colCount;x++){
                     let inputIndex = ((guessedWordsLength-1)*vSW.gameBoard.colCount)+(x);
@@ -118,20 +135,6 @@ const vSW = {
                         // letter is wrong
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
                     }
-                }
-                //if word guessed correctly
-                if(lastEnteredWord.join('')===askedWord){
-                    vSW.warningMessages(`Bravvo... You found the asked word!`);
-                }else{
-                    if(vSW.dictionary().includes(lastEnteredWord.join(''))){
-                        vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
-                        // Close newly entered word spot and begin to new word
-                        let newWord = [];
-                        vSW.gameBoard.guessedWords.push(newWord);
-                    }else{
-                        vSW.warningMessages(`This word is not on the dictionary!`);
-                    }
-
                 }
             }
         }
