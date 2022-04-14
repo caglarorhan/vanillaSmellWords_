@@ -2,6 +2,7 @@ import dictionary from './dictionary.js';
 
 const vSW = {
     name: 'vanillaSmellWords',
+    version:'2022.0.6',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
     extraCharsCodes:[305,231,351,246,252,287],
