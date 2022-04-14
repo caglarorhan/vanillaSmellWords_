@@ -94,6 +94,12 @@ const vSW = {
                 return;
             }
             if(lastEnteredWord.length===vSW.gameBoard.colCount){
+                // letterCountMap
+                let letterCountMap =Object.create(null);
+                askedWordLettersArray.forEach(letter=>{
+                    letterCountMap[letter]=++letterCountMap[letter] || 1;
+                })
+                console.log(JSON.stringify(letterCountMap))
                 //coloring hints created
                 for(let x=0; x<vSW.gameBoard.colCount;x++){
                     let inputIndex = ((guessedWordsLength-1)*vSW.gameBoard.colCount)+(x);
@@ -102,7 +108,12 @@ const vSW = {
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterCorrectPlace;
                     }else if(askedWordLettersArray.includes(lastEnteredWord[x])){
                         // letter is correct but its position is wrong
-                        theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterWrongPlace;
+                        if(letterCountMap[lastEnteredWord[x]]>0){
+                            theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterWrongPlace;
+                            letterCountMap[lastEnteredWord[x]]--;
+                        }else{
+                            theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
+                        }
                     }else{
                         // letter is wrong
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
