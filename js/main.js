@@ -107,9 +107,10 @@ const vSW = {
                 //if word guessed correctly
                 if(lastEnteredWord.join('')===askedWord){
                     vSW.warningMessages(`Bravvo... You found the asked word!`);
+
                 }else{
                     if(vSW.dictionary().includes(lastEnteredWord.join(''))){
-                        vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
+                        //vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
                         // Close newly entered word spot and begin to new word
                         let newWord = [];
                         vSW.gameBoard.guessedWords.push(newWord);
@@ -169,6 +170,7 @@ const vSW = {
                 let deleteButton = document.createElement('button');
                 deleteButton.style.cssText = vSW.cssStoryBook["keyboard-button-delete"];
                 deleteButton.innerHTML = "←";
+                deleteButton.id=`${vSW.name}-delete-button`;
                 deleteButton.addEventListener('click',()=>{
                     let lastGuessedWord = vSW.gameBoard.guessedWords[vSW.gameBoard.guessedWords.length-1];
                     if(lastGuessedWord.length){
@@ -184,6 +186,7 @@ const vSW = {
                 let enterButton = document.createElement('button');
                 enterButton.style.cssText = vSW.cssStoryBook["keyboard-button-enter"];
                 enterButton.innerHTML = "⏎";
+                enterButton.id=`${vSW.name}-enter-button`;
                 enterButton.addEventListener('click',vSW.gameBoard.checkEnteredWord);
                 document.getElementById(vSW.name + '-keyboard').appendChild(enterButton);
             }
@@ -220,5 +223,23 @@ window.addEventListener('load',()=>{
     let authorTag = document.createElement('div');
     authorTag.innerHTML=`author: <a href="${vSW.author}" target="_blank" rel="noopener noreferrer">Caglar Orhan</a>`;
     document.body.insertAdjacentElement('beforeend',authorTag);
+});
+
+document.addEventListener("keyup", event => {
+    console.log(event.key)
+    if(event.key==="Enter"){
+        document.querySelector(`#${vSW.name}-enter-button`).click();
+        return;
+    }
+    if(event.key==="Backspace"){
+        document.querySelector(`#${vSW.name}-delete-button`).click();
+        return;
+    }
+    if (/^[a-z]*$/gi.test(event.key) && event.key.length===1){
+        vSW.gameBoard.addChar(event.key.toLocaleLowerCase('tr'));
+
+    }
+
+
 });
 
