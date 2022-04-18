@@ -6,7 +6,7 @@ const vSW = {
     author:'https://github.com/caglarorhan',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
-    extraCharsCodes:[305,231,351,246,252,287],
+    extraCharsCodes:[305,231,360,350,351,246,252,287],
     init: () => {
         vSW.gameBoard.create()
             .then(() => {
@@ -15,6 +15,7 @@ const vSW = {
                 })
                 vSW.gameBoard.setBoard();
                 vSW.askedWordIndex = vSW.getRandomWordIndexFromDictionary();
+                vSW.gameBoard.showInfo("SCORE",JSON.parse(window.localStorage.getItem(vSW.name)).score);
             })
 
     },
@@ -35,6 +36,16 @@ const vSW = {
                 resolve(gameBoard);
             });
         },
+        reset:()=>{
+            vSW.gameBoard.guessedWords=[];
+            vSW.askedWordIndex = vSW.getRandomWordIndexFromDictionary();
+            let theInputs = document.querySelectorAll(`#${vSW.name} input`);
+            theInputs.forEach(i=>{
+                i.value='';
+                i.style.cssText=vSW.cssStoryBook.letterInput;
+            });
+            document.querySelectorAll( `#${vSW.name}-keyboard button`).forEach(btn=>{btn.disabled=false;})
+        },
         setBoard: () => {
             for (let row = 0; row < vSW.gameBoard.rowCount; row++) {
                 let rowDiv = document.createElement('div');
@@ -51,6 +62,15 @@ const vSW = {
                 }
                 document.getElementById(vSW.name).appendChild(rowDiv);
             }
+            // data created at localStorage
+            let data=Object.create(null);
+            let score = Object.create(null);
+            for(let x = 1; x<=vSW.gameBoard.colCount;x++){
+                score[x]=0;
+            }
+            score["fail"]=0;
+            data.score=score;
+            window.localStorage.setItem(vSW.name,JSON.stringify(data))
         },
         addChar: (char) => {
 
@@ -68,7 +88,9 @@ const vSW = {
         },
         placeWordsToBoard: () => {
             let theInputs = document.querySelectorAll(`#${vSW.name} input`);
-            theInputs.forEach(i=>i.value='');
+            theInputs.forEach(i=>{
+                i.value='';
+            });
             let askedWord = vSW.dictionary()[vSW.askedWordIndex];
             console.log(askedWord);
             for (let x = 0; x < vSW.gameBoard.guessedWords.length; x++) {
@@ -80,7 +102,6 @@ const vSW = {
             }
         },
         checkEnteredWord:()=>{
-
             let theInputs = document.querySelectorAll(`#${vSW.name} input`);
             if(vSW.gameBoard.guessedWords.length===0) return;
             let guessedWordsLength = vSW.gameBoard.guessedWords.length;
@@ -145,9 +166,31 @@ const vSW = {
             }
         },
         endGame:(data={didWin:false, message:"No message received."})=>{
-
+            let playedGameLogs=JSON.parse(window.localStorage.getItem(vSW.name));
+            if(data.didWin){
+                playedGameLogs.score[(vSW.gameBoard.guessedWords.length)]+=1
+                    window.localStorage.setItem(vSW.name,JSON.stringify(playedGameLogs))
+                setTimeout(vSW.gameBoard.reset,2000)
+            }else{
+                playedGameLogs.score["fail"]+=1
+                window.localStorage.setItem(vSW.name,JSON.stringify(playedGameLogs))
+                setTimeout(vSW.gameBoard.reset,2000)
+            }
             vSW.warningMessages(data.message);
+            vSW.gameBoard.showInfo("SCORE",JSON.parse(window.localStorage.getItem(vSW.name)).score);
             document.querySelectorAll( `#${vSW.name}-keyboard button`).forEach(btn=>btn.setAttribute('disabled','disabled'));
+        },
+        showInfo:(header="Header",data)=>{
+            if(document.getElementById(`${vSW.name}-infobox`)){document.getElementById(`${vSW.name}-infobox`).innerHTML='';}
+            let infoBox = document.createElement('div');
+            infoBox.id=vSW.name+"-infobox";
+            infoBox.style.cssText=vSW.cssStoryBook.infoBox;
+            infoBox.innerHTML=`<h5>${header}</h5>`;
+            Object.entries(data).forEach(([k,v])=>{
+                infoBox.innerHTML+= `<div>${k}:${v}</div>`;
+            })
+            document.body.append(infoBox);
+
         }
     },
         keyBoard: {
@@ -211,6 +254,7 @@ const vSW = {
             "correctLetterCorrectPlace":"color:white; background-color:green",
             "correctLetterWrongPlace":"color:white; background-color:orange",
             "wrongLetter":"color:white; background-color:grey",
+            "infoBox":"border:1px; width:200px; height:200px; position:absolute; top:0; right:0; display:block;"
         },
     warningMessages:(message)=>{
         alert(message);
