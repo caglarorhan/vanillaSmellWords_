@@ -128,8 +128,6 @@ const vSW = {
                     vSW.gameBoard.endGame({didWin:true, message:"Bravvo... You found the asked word!"});
                 }else{
                     if(vSW.dictionary().includes(lastEnteredWord.join(''))){
-                        //vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
-                        // Close newly entered word spot and begin to new word
                         let newWord = [];
                         vSW.gameBoard.guessedWords.push(newWord);
                     }else{
@@ -161,7 +159,11 @@ const vSW = {
                 }
             }
             if (vSW.gameBoard.guessedWords.length-1 === vSW.gameBoard.rowCount) {
-                vSW.gameBoard.endGame({didWin:true, message:"Board is full. Game Ended! You Lost!"});
+                let askedWord = vSW.dictionary()[vSW.askedWordIndex];
+                vSW.gameBoard.endGame({didWin:true, message:`
+                Board is full. Game Ended! You Lost!
+                Asked word was ${askedWord}
+                `});
 
             }
         },
@@ -170,11 +172,11 @@ const vSW = {
             if(data.didWin){
                 playedGameLogs.score[(vSW.gameBoard.guessedWords.length)]+=1
                     window.localStorage.setItem(vSW.name,JSON.stringify(playedGameLogs))
-                setTimeout(vSW.gameBoard.reset,2000)
+                setTimeout(vSW.gameBoard.reset,2000);
             }else{
                 playedGameLogs.score["fail"]+=1
                 window.localStorage.setItem(vSW.name,JSON.stringify(playedGameLogs))
-                setTimeout(vSW.gameBoard.reset,2000)
+                setTimeout(vSW.gameBoard.reset,2000);
             }
             vSW.warningMessages(data.message);
             vSW.gameBoard.showInfo("SCORE",JSON.parse(window.localStorage.getItem(vSW.name)).score);
