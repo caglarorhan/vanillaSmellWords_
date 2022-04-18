@@ -2,7 +2,7 @@ import dictionary from './dictionary.js';
 
 const vSW = {
     name: 'vanillaSmellWords',
-    version:'2022.0.6',
+    version:'2022.0.8',
     author:'https://github.com/caglarorhan',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
@@ -53,10 +53,7 @@ const vSW = {
             }
         },
         addChar: (char) => {
-            if (vSW.gameBoard.guessedWords.length === vSW.gameBoard.rowCount && vSW.gameBoard.guessedWords[vSW.gameBoard.guessedWords.length-1].length===vSW.gameBoard.colCount) {
-                vSW.warningMessages('Board is full. Game Ended!');
-                return;
-            }
+
             if (!vSW.gameBoard.guessedWords.length) {
                 let newWord = [];
                 newWord.push(char);
@@ -83,6 +80,7 @@ const vSW = {
             }
         },
         checkEnteredWord:()=>{
+
             let theInputs = document.querySelectorAll(`#${vSW.name} input`);
             if(vSW.gameBoard.guessedWords.length===0) return;
             let guessedWordsLength = vSW.gameBoard.guessedWords.length;
@@ -106,8 +104,7 @@ const vSW = {
 
                 //if word guessed correctly
                 if(lastEnteredWord.join('')===askedWord){
-                    vSW.warningMessages(`Bravvo... You found the asked word!`);
-
+                    vSW.gameBoard.endGame({didWin:true, message:"Bravvo... You found the asked word!"});
                 }else{
                     if(vSW.dictionary().includes(lastEnteredWord.join(''))){
                         //vSW.warningMessages(`Ahhh, you missed! Please keep trying.`);
@@ -142,6 +139,15 @@ const vSW = {
                     }
                 }
             }
+            if (vSW.gameBoard.guessedWords.length-1 === vSW.gameBoard.rowCount) {
+                vSW.gameBoard.endGame({didWin:true, message:"Board is full. Game Ended! You Lost!"});
+
+            }
+        },
+        endGame:(data={didWin:false, message:"No message received."})=>{
+
+            vSW.warningMessages(data.message);
+            document.querySelectorAll( `#${vSW.name}-keyboard button`).forEach(btn=>btn.setAttribute('disabled','disabled'));
         }
     },
         keyBoard: {
@@ -225,7 +231,7 @@ window.addEventListener('load',()=>{
     document.body.insertAdjacentElement('beforeend',authorTag);
 });
 
-document.addEventListener("keyup", event => {
+document.addEventListener("keydown", event => {
     console.log(event.key)
     if(event.key==="Enter"){
         document.querySelector(`#${vSW.name}-enter-button`).click();
