@@ -43,6 +43,7 @@ const vSW = {
             theInputs.forEach(i=>{
                 i.value='';
                 i.style.cssText=vSW.cssStoryBook.letterInput;
+                delete i.dataset.correctLetterCorrectPlace;
             });
             document.querySelectorAll( `#${vSW.name}-keyboard button`).forEach(btn=>{btn.disabled=false;})
         },
@@ -142,13 +143,11 @@ const vSW = {
                 for(let x=0; x<vSW.gameBoard.colCount;x++) {
                     let inputIndex = ((guessedWordsLength - 1) * vSW.gameBoard.colCount) + (x);
                     if (lastEnteredWord[x] === askedWordLettersArray[x]) {
-                        console.log(`girilmis kelimenin ${x}. siradaki harfi ${lastEnteredWord[x]}, sorulan kelimenin ayni siradaki harfi ${askedWordLettersArray[x]}`)
                         // letter and its position are correct.
                         theInputs[inputIndex].style.cssText += vSW.cssStoryBook.correctLetterCorrectPlace;
                         theInputs[inputIndex].dataset.correctLetterCorrectPlace="1_1";
                         letterCountMap[lastEnteredWord[x]]--;
                     }
-                    console.log(JSON.stringify(letterCountMap))
                 }
                 // second other positions for correct-wrong letters
                 for(let x=0; x<vSW.gameBoard.colCount;x++){
@@ -168,12 +167,11 @@ const vSW = {
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
                          theInputs[inputIndex].dataset.correctLetterCorrectPlace="0_0";
                     }
-                    console.log(JSON.stringify(letterCountMap))
                 }
             }
             if (vSW.gameBoard.guessedWords.length-1 === vSW.gameBoard.rowCount) {
                 let askedWord = vSW.dictionary()[vSW.askedWordIndex];
-                vSW.gameBoard.endGame({didWin:true, message:`
+                vSW.gameBoard.endGame({didWin:false, message:`
                 Board is full. Game Ended! You Lost!
                 Asked word was ${askedWord}
                 `});
