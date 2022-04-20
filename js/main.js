@@ -2,7 +2,7 @@ import dictionary from './dictionary.js';
 
 const vSW = {
     name: 'vanillaSmellWords',
-    version:'2022.0.8',
+    version:'2022.0.9',
     author:'https://github.com/caglarorhan',
     dictionary:()=>{return dictionary},
     askedWordIndex:null,
@@ -210,6 +210,12 @@ const vSW = {
             Object.entries(data).forEach(([k,v])=>{
                 infoBox.innerHTML+= `<div>${k}:${v}</div>`;
             })
+            infoBox.innerHTML+=`<hr>
+<div style="text-align: left;"><span style="${vSW.cssStoryBook.correctLetterCorrectPlace}; width:20px !important; height:20px !important; display:inline-block;"> </span> correct letter correct place</div>
+<div style="text-align: left;"><span style="${vSW.cssStoryBook.correctLetterWrongPlace}; width:20px !important; height:20px !important; display:inline-block;"> </span> correct letter wrong place</div>
+<div style="text-align: left;"><span style="${vSW.cssStoryBook.wrongLetter}; width:20px !important; height:20px !important; display:inline-block;"> </span> wrong letter</div>
+`;
+
             document.body.append(infoBox);
 
         }
@@ -271,7 +277,7 @@ const vSW = {
             "keyboard-button-delete": "width: 50px; height: 50px; cursor: pointer; corner-radius: 9px; background-color:red; color:white;",
             "game-board-row": "width: 100%; height: 20%; display: flex; flex-direction: row;",
             "game-board-col": "width: 20%; height: 100%; background-color: #f5f5f5; border: 1px solid #000;",
-            "letterInput": "width:100%; height:100%; color:red; font-size:3vw; text-align:center; font-weight:bold;",
+            "letterInput": "width:100%; height:100%; color:red; font-size:3vw; text-align:center; font-weight:bold; cursor:pointer;",
             "correctLetterCorrectPlace":"color:white; background-color:green",
             "correctLetterWrongPlace":"color:white; background-color:orange",
             "wrongLetter":"color:white; background-color:grey",
