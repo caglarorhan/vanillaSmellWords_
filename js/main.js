@@ -71,7 +71,9 @@ const vSW = {
             }
             score["fail"]=0;
             data.score=score;
-            window.localStorage.setItem(vSW.name,JSON.stringify(data))
+            if(!window.localStorage.getItem(vSW.name)){
+                window.localStorage.setItem(vSW.name,JSON.stringify(data))
+            }
         },
         addChar: (char) => {
 
