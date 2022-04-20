@@ -138,24 +138,37 @@ const vSW = {
                 }
 
                 //coloring hints created
+                // first correct position correct letter
+                for(let x=0; x<vSW.gameBoard.colCount;x++) {
+                    let inputIndex = ((guessedWordsLength - 1) * vSW.gameBoard.colCount) + (x);
+                    if (lastEnteredWord[x] === askedWordLettersArray[x]) {
+                        console.log(`girilmis kelimenin ${x}. siradaki harfi ${lastEnteredWord[x]}, sorulan kelimenin ayni siradaki harfi ${askedWordLettersArray[x]}`)
+                        // letter and its position are correct.
+                        theInputs[inputIndex].style.cssText += vSW.cssStoryBook.correctLetterCorrectPlace;
+                        theInputs[inputIndex].dataset.correctLetterCorrectPlace="1_1";
+                        letterCountMap[lastEnteredWord[x]]--;
+                    }
+                    console.log(JSON.stringify(letterCountMap))
+                }
+                // second other positions for correct-wrong letters
                 for(let x=0; x<vSW.gameBoard.colCount;x++){
                     let inputIndex = ((guessedWordsLength-1)*vSW.gameBoard.colCount)+(x);
-                    if(lastEnteredWord[x]===askedWordLettersArray[x]){
-                        // letter and its position are correct.
-                        theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterCorrectPlace;
-                        letterCountMap[lastEnteredWord[x]]--;
-                    }else if(askedWordLettersArray.includes(lastEnteredWord[x])){
+                     if(askedWordLettersArray.includes(lastEnteredWord[x])){
                         // letter is correct but its position is wrong
-                        if(letterCountMap[lastEnteredWord[x]]>0){
+                        if(letterCountMap[lastEnteredWord[x]]>0 && theInputs[inputIndex].dataset.correctLetterCorrectPlace!=="1_1"){
                             theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.correctLetterWrongPlace;
+                            theInputs[inputIndex].dataset.correctLetterCorrectPlace="1_0";
                             letterCountMap[lastEnteredWord[x]]--;
-                        }else{
+                        }else if(theInputs[inputIndex].dataset.correctLetterCorrectPlace!=="1_1"){
+                            theInputs[inputIndex].dataset.correctLetterCorrectPlace="0_0";
                             theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
                         }
                     }else{
                         // letter is wrong
                         theInputs[inputIndex].style.cssText+=vSW.cssStoryBook.wrongLetter;
+                         theInputs[inputIndex].dataset.correctLetterCorrectPlace="0_0";
                     }
+                    console.log(JSON.stringify(letterCountMap))
                 }
             }
             if (vSW.gameBoard.guessedWords.length-1 === vSW.gameBoard.rowCount) {
@@ -183,10 +196,16 @@ const vSW = {
             document.querySelectorAll( `#${vSW.name}-keyboard button`).forEach(btn=>btn.setAttribute('disabled','disabled'));
         },
         showInfo:(header="Header",data)=>{
-            if(document.getElementById(`${vSW.name}-infobox`)){document.getElementById(`${vSW.name}-infobox`).innerHTML='';}
-            let infoBox = document.createElement('div');
-            infoBox.id=vSW.name+"-infobox";
-            infoBox.style.cssText=vSW.cssStoryBook.infoBox;
+            let infoBox;
+            if(document.getElementById(`${vSW.name}-infobox`)){
+                infoBox = document.getElementById(`${vSW.name}-infobox`)
+                document.getElementById(`${vSW.name}-infobox`).innerHTML='';
+            }else{
+                infoBox = document.createElement('div');
+                infoBox.id=vSW.name+"-infobox";
+                infoBox.style.cssText=vSW.cssStoryBook.infoBox;
+            }
+
             infoBox.innerHTML=`<h5>${header}</h5>`;
             Object.entries(data).forEach(([k,v])=>{
                 infoBox.innerHTML+= `<div>${k}:${v}</div>`;
